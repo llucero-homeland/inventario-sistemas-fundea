@@ -1,2 +1,3 @@
 index.html
-Inventario de sistemas del Grupo FUNDEA
+README.md
+.nojekyll
