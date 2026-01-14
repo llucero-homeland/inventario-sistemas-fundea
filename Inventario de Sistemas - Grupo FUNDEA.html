@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario de Sistemas - Grupo FUNDEA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+        }
+        
+        .header-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .logo-container {
+            flex-shrink: 0;
+            margin-right: 25px;
+        }
+        
+        .logo {
+            width: 180px;
+            height: 90px;
+            background: linear-gradient(135deg, #1a3a5f, #2c5282);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo-text-top {
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .logo-text-bottom {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+        
+        .header-text {
+            flex: 1;
+        }
+        
+        h1 {
+            color: #1a3a5f;
+            margin-bottom: 8px;
+            font-size: 2.3rem;
+            border-bottom: 3px solid #2c5282;
+            padding-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #4a5568;
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        
+        .description {
+            color: #718096;
+            font-size: 1rem;
+            line-height: 1.5;
+            background-color: #f7fafc;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #2c5282;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        select, input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            flex: 1;
+            min-width: 200px;
+            padding: 20px;
+            border-radius: 8px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .stat-card.system-count {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+        
+        .stat-card.company-count {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+        
+        .stat-card.integration-count {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+        
+        .group-section {
+            margin-bottom: 40px;
+        }
+        
+        .group-title {
+            background: linear-gradient(90deg, #1a3a5f, #2c5282);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .group-title h2 {
+            font-size: 1.4rem;
+        }
+        
+        .group-count {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .system-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .system-card {
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: white;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .system-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .system-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .system-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            flex: 1;
+        }
+        
+        .company-badge {
+            background-color: #e8f4fc;
+            color: #3498db;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .system-details {
+            flex: 1;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            min-width: 120px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .detail-value {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+        
+        .priority {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .priority.alta {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .priority.media {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .priority.baja {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .decision {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .decision.mantener {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .decision.evaluar {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .decision.sustituye {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .decision.se-mantiene {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            padding-top: 20px;
+            border-top: 1px solid #eaeaea;
+        }
+        
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo-container {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .system-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-card {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-container">
+            <div class="logo-container">
+                <div class="logo">
+                    <div class="logo-text-top">GRUPO CORPORATIVO</div>
+                    <div class="logo-text-bottom">FUNDEA</div>
+                </div>
+            </div>
+            <div class="header-text">
+                <h1><i class="fas fa-server"></i> Inventario de Sistemas - Grupo FUNDEA</h1>
+                <p class="subtitle">Informe Consolidado</p>
+                <div class="description">
+                    Este informe clasifica los sistemas según su tipo (ERP, CRM, Facturación, Nómina, BI, Plataforma Omnicanal, etc.) y agrupa los sistemas utilizados por las empresas del grupo: <strong>TARCRESA</strong>, <strong>A15</strong> y <strong>FUNDEA</strong>.
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="filter-group">
+                <label for="companyFilter"><i class="fas fa-building"></i> Filtrar por Empresa</label>
+                <select id="companyFilter">
+                    <option value="all">Todas las Empresas</option>
+                    <option value="TARCRESA">TARCRESA</option>
+                    <option value="A15">A15</option>
+                    <option value="FUNDEA">FUNDEA</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="typeFilter"><i class="fas fa-filter"></i> Filtrar por Tipo</label>
+                <select id="typeFilter">
+                    <option value="all">Todos los Tipos</option>
+                    <option value="ERP">ERP</option>
+                    <option value="CMS">CMS</option>
+                    <option value="Facturación">Facturación</option>
+                    <option value="Plataforma Omnicanal">Plataforma Omnicanal</option>
+                    <option value="Business Intelligence">Business Intelligence</option>
+                    <option value="Mensajería">Mensajería</option>
+                    <option value="CORE BANCARIO">CORE BANCARIO</option>
+                    <option value="CRM">CRM</option>
+                    <option value="RRHH">RRHH</option>
+                    <option value="Puntos de Venta">Puntos de Venta</option>
+                    <option value="Gestión Documental">Gestión Documental</option>
+                    <option value="Integración Bancaria">Integración Bancaria</option>
+                    <option value="Validación Crédito">Validación Crédito</option>
+                    <option value="Banca Móvil">Banca Móvil</option>
+                    <option value="Seguridad">Seguridad</option>
+                    <option value="Gestión de Proyectos">Gestión de Proyectos</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="decisionFilter"><i class="fas fa-check-circle"></i> Decisión con Dynamics</label>
+                <select id="decisionFilter">
+                    <option value="all">Todas las Decisiones</option>
+                    <option value="Mantener">Mantener</option>
+                    <option value="Evaluar">Evaluar</option>
+                    <option value="Se Mantiene">Se Mantiene</option>
+                    <option value="Se sustituye">Se sustituye</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="searchBox"><i class="fas fa-search"></i> Buscar Sistema</label>
+                <input type="text" id="searchBox" placeholder="Nombre del sistema...">
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card system-count">
+                <h3 id="totalSystems">38</h3>
+                <p>Sistemas Registrados</p>
+            </div>
+            <div class="stat-card company-count">
+                <h3 id="totalCompanies">3</h3>
+                <p>Empresas del Grupo</p>
+            </div>
+            <div class="stat-card integration-count">
+                <h3 id="integrationCount">24</h3>
+                <p>Sistemas a Integrar con BC</p>
+            </div>
+        </div>
+        
+        <div id="systemGroups">
+            <!-- Los grupos se generarán dinámicamente con JavaScript -->
+        </div>
+        
+        <footer>
+            <p>Informe generado a partir del inventario de sistemas del Grupo FUNDEA | Última actualización: <span id="currentDate"></span></p>
+            <p><i class="fas fa-info-circle"></i> <strong>Leyenda:</strong> 
+                <span class="decision mantener">Mantener</span> = Sistema se mantendrá e integrará con Dynamics 365 Business Central (BC)
+                <span class="decision evaluar">Evaluar</span> = Se evaluará si integrar o reemplazar con Dynamics
+                <span class="decision sustituye">Sustituir</span> = Sistema será sustituido por Dynamics
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Datos de sistemas extraídos del archivo
+        const systemsData = [
+            // TARCRESA
+            {name: "CMS - SAAS", functions: "CMS", type: "CMS", provider: "Procesos NET", company: "TARCRESA", process: "Creacion de cliente - Generacion de tarjeta", decision: "Evaluar", priority: "Alta", improvements: "Se confirmara permanecia con proveedor limitando sus capacidades."},
+            {name: "KTF", functions: "ERP", type: "ERP", provider: "KTF", company: "TARCRESA", process: "Partidas contables - particas de diario y generar estados financieros", decision: "Mantener", priority: "Alta", improvements: "Se utiliza para temas contables, se definira si existe informacion por migrar"},
+            {name: "FEL", functions: "Facturación Electrónica", type: "Facturación", provider: "INFILE", company: "TARCRESA", process: "Emisión de Facturas Electrónicas (FEL)", decision: "Evaluar", priority: "Alta", improvements: "Agregar apartado en factura con estado de cuenta y opcion de envio via Whatsapp"},
+            {name: "CUADRA", functions: "Aprobaciones Buros de credito", type: "Validación Crédito", provider: "CUADRA", company: "TARCRESA", process: "Validaciones en buro de credito", decision: "Mantener", priority: "Alta", improvements: ""},
+            {name: "Switch de pagos", functions: "Sincronizacion de transacciones", type: "Pagos", provider: "Procesos NET", company: "TARCRESA", process: "Sincronizacion de transacciones", decision: "Mantener", priority: "", improvements: ""},
+            {name: "Bancos", functions: "Integracion bancos", type: "Integración Bancaria", provider: "Proceso Nuevo", company: "TARCRESA", process: "Generar procesos que actualice los pagos aplicados", decision: "Mantener", priority: "Alta", improvements: "Analizar arquitectura de integracion."},
+            {name: "V POS", functions: "Aplicacion escritorio", type: "Puntos de Venta", provider: "Procesos NET", company: "TARCRESA", process: "Cobros en comercio", decision: "Mantener", priority: "Alta", improvements: "Desarrollar plataforma integrada api CMS y Switch de pagos, opcion a generar boton de pago para eccommerce, link de pago - opcion a generar tarjetas digitales (WebApp)"},
+            {name: "M POS", functions: "Aplicacion movil", type: "Puntos de Venta", provider: "Procesos NET", company: "TARCRESA", process: "Cobros moviles", decision: "Mantener", priority: "Alta", improvements: "Desarrollar plataforma integrada (api) a CMS y Switch de pagos, opcion a generar boton de pago para ecommerce, link de pago."},
+            {name: "Sky App", functions: "Plataforma del gobierno", type: "Gobierno", provider: "Genera formatos FEIC", company: "TARCRESA", process: "Genera formato FEIC", decision: "Evaluar", priority: "", improvements: "Contruir el proceso"},
+            {name: "Generador formatos FEIC", functions: "Generador formatos FEIC", type: "Gobierno", provider: "Proceso Nuevo", company: "TARCRESA", process: "Generar formatos FEIC", decision: "Evaluar", priority: "Alta", improvements: "Contruir el proceso"},
+            {name: "Reporteria Power BI", functions: "Business Intelligence", type: "Business Intelligence", provider: "Power BI", company: "TARCRESA", process: "Reportes CMS - coustimizados", decision: "Mantener", priority: "Alta", improvements: "Se construiran"},
+            {name: "Ucontac", functions: "Plaforma Omnicanal", type: "Plataforma Omnicanal", provider: "Ucontac", company: "TARCRESA", process: "Comunicacion canales digitales y BOT", decision: "Mantener", priority: "Alta", improvements: "Se validara proveedor, unificar sistemas entre Unidades de Negocio"},
+            {name: "Forza", functions: "Mensajeria", type: "Mensajería", provider: "Forza", company: "TARCRESA", process: "Liquidacion de entregas", decision: "Mantener", priority: "Alta", improvements: "Analizar arquitectura de integracion"},
+            {name: "Cargo", functions: "Mensajeria", type: "Mensajería", provider: "Cargo Express", company: "TARCRESA", process: "Liquidacion de entregas", decision: "Mantener", priority: "Alta", improvements: "Analizar arquitectura de integracion"},
+            
+            // A15
+            {name: "Plataforma A15", functions: "Modulos Administracion de usuarios Agecia", type: "Administración", provider: "Homeland", company: "A15", process: "Ciclo de pago - conciliaciones - liquidaciones", decision: "Se Mantiene", priority: "", improvements: "Arquitectura de integracion - Integrarse a la red bancaria - Revision de mejoras y correcion de bugs..."},
+            {name: "FEL", functions: "Certificador FEL", type: "Facturación", provider: "Camara de Comercio", company: "A15", process: "Emisión de facturas (Integrado a A15)", decision: "Se Mantiene", priority: "", improvements: "Opcion a anular facturas desde A15"},
+            {name: "Bot WhatsApp y Redes Social", functions: "Consultas y solicitudes de anticipo", type: "Comunicación", provider: "Consistec", company: "A15", process: "Flujos Whatapp - Facebook - Instagram", decision: "Se Mantiene", priority: "", improvements: "Revisar Flujos"},
+            {name: "Banca virtual", functions: "Pagos de anticipos y consiliaciones", type: "Banca", provider: "Red Bancos", company: "A15", process: "Conciliaciones de anticipo", decision: "Se Mantiene", priority: "", improvements: "Integrarse a Banco para pagar anticipos y confirmacion de depositos para emitir recibo"},
+            {name: "Peachtree", functions: "Sistema contable", type: "Contabilidad", provider: "Babel", company: "A15", process: "Procesos contables", decision: "Se sustituye", priority: "", improvements: "Migrar historial"},
+            {name: "Tigo SMS", functions: "Mensajes de texto - notificaciones automaticas", type: "Mensajería", provider: "TIGO", company: "A15", process: "A15 / Envio credenciales - bajas y eliminaciones", decision: "Se Mantiene", priority: "", improvements: ""},
+            {name: "Power BI", functions: "Reporteria", type: "Business Intelligence", provider: "Microsoft", company: "A15", process: "ERP - A15", decision: "Se Mantiene", priority: "", improvements: "Integrarlo con reportes online - base de datos"},
+            {name: "Microsoft", functions: "Licencias office 365", type: "Productividad", provider: "Microsoft", company: "A15", process: "Operaciones", decision: "Se Mantiene", priority: "", improvements: "Analizar alcance de licencias activas"},
+            
+            // FUNDEA
+            {name: "BANTOTAL", functions: "CORE BANCARIO", type: "CORE BANCARIO", provider: "BANTOTAL", company: "FUNDEA", process: "Contabilidad, administracion de cartera de creditos, y administracion de usuarios", decision: "Mantener", priority: "", improvements: "Analizar funcionalidades de modulos en BC"},
+            {name: "ERP", functions: "ERP", type: "ERP", provider: "KTF", company: "FUNDEA", process: "Gestion de proveedores - Caja chica - presupuesto - depresiacion de equipos", decision: "Evaluar", priority: "", improvements: "Se mantendra historial"},
+            {name: "Cartera digital", functions: "Originacion de creditos", type: "Cartera", provider: "Cartera digital", company: "FUNDEA", process: "Originacion de creditos", decision: "Mantener", priority: "", improvements: ""},
+            {name: "Totalimage", functions: "Gestor documental", type: "Gestión Documental", provider: "Totalimage", company: "FUNDEA", process: "Documentacion usuarios - perfiles", decision: "Mantener", priority: "", improvements: ""},
+            {name: "E-Manager", functions: "Flujo de negocio - Enbudo de ventas - Capa aprovaciones", type: "Gestión Comercial", provider: "E-Manager", company: "FUNDEA", process: "Procesos area comercial", decision: "Mantener", priority: "", improvements: ""},
+            {name: "Evolution", functions: "RRHH - generacion de planilla", type: "RRHH", provider: "Evolution", company: "FUNDEA", process: "RRHH", decision: "Mantener", priority: "", improvements: "Analizar arquitectura de integracion con BC"},
+            {name: "Onesite", functions: "Capa media - flujos de trabajo", type: "Integrador", provider: "Onesite", company: "FUNDEA", process: "Integrador", decision: "Mantener", priority: "", improvements: ""},
+            {name: "Ucontact", functions: "plataforma omnicanal", type: "Plataforma Omnicanal", provider: "Ucontac", company: "FUNDEA", process: "Software de call center", decision: "Mantener", priority: "", improvements: ""},
+            {name: "Onmicanal TIGO", functions: "plataforma omnicanal", type: "Plataforma Omnicanal", provider: "facebook - redes sociales", company: "FUNDEA", process: "comunicacion omnical", decision: "Mantener", priority: "", improvements: ""},
+            {name: "TIGO", functions: "Mensajeria corta - SMS", type: "Mensajería", provider: "TIGO", company: "FUNDEA", process: "SMS", decision: "Mantener", priority: "", improvements: ""},
+            {name: "Correo", functions: "Correo electronico", type: "Comunicación", provider: "Gmail", company: "FUNDEA", process: "correos electronicos", decision: "Mantener", priority: "", improvements: ""},
+            {name: "Vista 360", functions: "CRM", type: "CRM", provider: "Vista 360", company: "FUNDEA", process: "informacion de clientes - segmetacion de cartera", decision: "Mantener", priority: "", improvements: ""},
+            {name: "Rapifundea", functions: "APP - BANCO MOVIL", type: "Banca Móvil", provider: "BANTOTAL", company: "FUNDEA", process: "informacion financiera - solicitud de clientes - personalizacion de ofertas", decision: "Mantener", priority: "", improvements: ""},
+            {name: "Click Up", functions: "Gestion de proyectos", type: "Gestión de Proyectos", provider: "ClipUp", company: "FUNDEA", process: "Administracion de proyectos", decision: "Mantener", priority: "", improvements: ""},
+            {name: "Monitor plus", functions: "Prevencion del fraude", type: "Seguridad", provider: "Monitor Plus", company: "FUNDEA", process: "Prevencion de lavado de dinero, integrado por Batch", decision: "Mantener", priority: "", improvements: ""},
+            {name: "Power BI", functions: "Analitica - Dashboards", type: "Business Intelligence", provider: "MS Power BI", company: "FUNDEA", process: "Reportes - analitica - evolutivos Cuenta con Datawarehouse", decision: "Mantener", priority: "", improvements: ""}
+        ];
+
+        // Agrupar sistemas por tipo
+        function groupSystemsByType(systems) {
+            const groups = {};
+            
+            systems.forEach(system => {
+                if (!groups[system.type]) {
+                    groups[system.type] = [];
+                }
+                groups[system.type].push(system);
+            });
+            
+            return groups;
+        }
+        
+        // Renderizar los grupos de sistemas
+        function renderSystemGroups(groups) {
+            const container = document.getElementById('systemGroups');
+            container.innerHTML = '';
+            
+            // Ordenar los tipos alfabéticamente
+            const sortedTypes = Object.keys(groups).sort();
+            
+            // Contadores para estadísticas
+            let totalSystems = 0;
+            const companies = new Set();
+            let integrationCount = 0;
+            
+            if (sortedTypes.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-search fa-2x"></i><h3>No se encontraron sistemas con los filtros aplicados</h3><p>Intenta con otros criterios de búsqueda</p></div>';
+                return;
+            }
+            
+            sortedTypes.forEach(type => {
+                const systemsInGroup = groups[type];
+                totalSystems += systemsInGroup.length;
+                
+                // Crear sección del grupo
+                const groupSection = document.createElement('div');
+                groupSection.className = 'group-section';
+                
+                // Título del grupo
+                const groupTitle = document.createElement('div');
+                groupTitle.className = 'group-title';
+                groupTitle.innerHTML = `
+                    <h2><i class="fas fa-folder"></i> ${type}</h2>
+                    <div class="group-count">${systemsInGroup.length} sistema(s)</div>
+                `;
+                
+                // Grid de sistemas
+                const systemGrid = document.createElement('div');
+                systemGrid.className = 'system-grid';
+                
+                // Renderizar cada sistema del grupo
+                systemsInGroup.forEach(system => {
+                    companies.add(system.company);
+                    if (system.decision.includes("Mantener") || system.decision.includes("Se Mantiene")) {
+                        integrationCount++;
+                    }
+                    
+                    const systemCard = document.createElement('div');
+                    systemCard.className = 'system-card';
+                    systemCard.innerHTML = `
+                        <div class="system-header">
+                            <div class="system-name">${system.name}</div>
+                            <div class="company-badge">${system.company}</div>
+                        </div>
+                        <div class="system-details">
+                            <div class="detail-row">
+                                <div class="detail-label">Proveedor:</div>
+                                <div class="detail-value">${system.provider}</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Proceso Principal:</div>
+                                <div class="detail-value">${system.process}</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Decisión BC:</div>
+                                <div class="detail-value">
+                                    <span class="decision ${system.decision.toLowerCase().replace(' ', '-').replace('se-', '')}">${system.decision}</span>
+                                </div>
+                            </div>
+                            ${system.priority ? `
+                            <div class="detail-row">
+                                <div class="detail-label">Prioridad:</div>
+                                <div class="detail-value">
+                                    <span class="priority ${system.priority.toLowerCase()}">${system.priority}</span>
+                                </div>
+                            </div>` : ''}
+                            ${system.improvements ? `
+                            <div class="detail-row">
+                                <div class="detail-label">Mejoras:</div>
+                                <div class="detail-value">${system.improvements.substring(0, 100)}${system.improvements.length > 100 ? '...' : ''}</div>
+                            </div>` : ''}
+                        </div>
+                    `;
+                    
+                    systemGrid.appendChild(systemCard);
+                });
+                
+                groupSection.appendChild(groupTitle);
+                groupSection.appendChild(systemGrid);
+                container.appendChild(groupSection);
+            });
+            
+            // Actualizar estadísticas
+            document.getElementById('totalSystems').textContent = totalSystems;
+            document.getElementById('totalCompanies').textContent = companies.size;
+            document.getElementById('integrationCount').textContent = integrationCount;
+        }
+        
+        // Filtrar sistemas
+        function filterSystems() {
+            const companyFilter = document.getElementById('companyFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            const decisionFilter = document.getElementById('decisionFilter').value;
+            const searchBox = document.getElementById('searchBox').value.toLowerCase();
+            
+            let filteredSystems = systemsData;
+            
+            // Filtrar por empresa
+            if (companyFilter !== 'all') {
+                filteredSystems = filteredSystems.filter(system => system.company === companyFilter);
+            }
+            
+            // Filtrar por tipo
+            if (typeFilter !== 'all') {
+                filteredSystems = filteredSystems.filter(system => system.type === typeFilter);
+            }
+            
+            // Filtrar por decisión
+            if (decisionFilter !== 'all') {
+                filteredSystems = filteredSystems.filter(system => system.decision === decisionFilter);
+            }
+            
+            // Filtrar por búsqueda
+            if (searchBox) {
+                filteredSystems = filteredSystems.filter(system => 
+                    system.name.toLowerCase().includes(searchBox) || 
+                    system.functions.toLowerCase().includes(searchBox) ||
+                    system.process.toLowerCase().includes(searchBox)
+                );
+            }
+            
+            const groupedSystems = groupSystemsByType(filteredSystems);
+            renderSystemGroups(groupedSystems);
+        }
+        
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Establecer fecha actual
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('es-ES', options);
+            
+            // Renderizar todos los sistemas inicialmente
+            const initialGroups = groupSystemsByType(systemsData);
+            renderSystemGroups(initialGroups);
+            
+            // Configurar eventos de filtro
+            document.getElementById('companyFilter').addEventListener('change', filterSystems);
+            document.getElementById('typeFilter').addEventListener('change', filterSystems);
+            document.getElementById('decisionFilter').addEventListener('change', filterSystems);
+            document.getElementById('searchBox').addEventListener('input', filterSystems);
+        });
+    </script>
+</body>
+</html>
